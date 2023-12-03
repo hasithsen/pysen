@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" class="h-100">
+
+{% include 'partials/head.html' %}
+
+<body class="d-flex flex-column h-100">
+
+  <!-- Begin page content -->
+  <main class="flex-shrink-0">
+    <div class="container">
+      {% include 'partials/header.html' %}
+    </div>
+
+    <div class="container">
+      <h1 class="mt-5">{{ site["name"] }}</h1>
+    </div>
+  </main>
+
+  {% include 'partials/footer.html' %}
+
+</body>
+
+</html>

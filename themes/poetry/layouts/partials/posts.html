@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" class="h-100">
+
+{% include 'layouts/head.html' %}
+
+<body class="d-flex flex-column h-100">
+
+  <!-- Begin page content -->
+  <main class="flex-shrink-0">
+    <div class="container">
+      {% include 'layouts/header.html' %}
+    </div>
+
+    <div class="container">
+      <article>
+        <header id="post-header">
+          <h1 class="mt-5">{{ post['title'] }}</h1>
+          <div><time>{{ post['date'] }}June 20, 2023</time></div>
+        </header>
+        <p class="lead">{{ post['content'] }}</p>
+      </article>
+    </div>
+  </main>
+
+  {% include 'layouts/footer.html' %}
+
+</body>
+
+</html>
