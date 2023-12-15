@@ -1,28 +1,28 @@
 <!doctype html>
 <html lang="en" class="h-100">
 
-{% include 'layouts/head.html' %}
+{% include 'partials/head.html' %}
 
 <body class="d-flex flex-column h-100">
 
   <!-- Begin page content -->
   <main class="flex-shrink-0">
     <div class="container">
-      {% include 'layouts/header.html' %}
+      {% include 'partials/header.html' %}
     </div>
 
     <div class="container">
       <article>
         <header id="post-header">
-          <h1 class="mt-5">{{ post['title'] }}</h1>
-          <div><time>{{ post['date'] }}June 20, 2023</time></div>
+          <h1 class="mt-5">{{ post_ctx["title"] }}</h1>
+          <div><time>{{ post_ctx["date"] }}</time></div>
         </header>
-        <p class="lead">{{ post['content'] }}</p>
+        <p class="lead">{{ post_ctx["content"] }}</p>
       </article>
     </div>
   </main>
 
-  {% include 'layouts/footer.html' %}
+  {% include 'partials/footer.html' %}
 
 </body>
 

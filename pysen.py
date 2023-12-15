@@ -12,6 +12,8 @@ import os
 from tzlocal import get_localzone
 from jinja2 import Template, Environment, FileSystemLoader
 import shutil
+import markdown
+import frontmatter
 
 
 __license__ = "MIT"
@@ -88,6 +90,25 @@ def remove_directory(directory_path):
     print(f"An unexpected error occurred: {e}")
 
 
+def remove_everything_inside_directory(directory_path):
+  try:
+    # Iterate over all files and subdirectories inside the directory
+    for filename in os.listdir(directory_path):
+      file_path = os.path.join(directory_path, filename)
+
+      # Remove files
+      if os.path.isfile(file_path):
+        os.unlink(file_path)
+
+      # Remove directories (recursively)
+      elif os.path.isdir(file_path):
+        shutil.rmtree(file_path)
+
+    print(f"Successfully removed everything inside '{directory_path}'.")
+  except Exception as e:
+    print(f"Error: {e}")
+
+
 def create_directory(directory_path):
   try:
     # Create a directory at the specified path
@@ -113,36 +134,60 @@ def copy_directory(source_path, destination_path):
     print(f"An unexpected error occurred: {e}")
 
 
+def load_template(html_theme, template_name):
+  # Load Jinja template from the 'themes' directory
+  template_loader = FileSystemLoader(f"themes/{html_theme}/layouts")
+  template_env = Environment(loader=template_loader)
+  return template_env.get_template(template_name)
+
+
 def build_site():
   html_theme = "poetry"  # directory name from under themes/
+  post_directory = "content/posts"
   build_export_directory = "public"
 
-  # load templates folder to environment (security measure)
-  env = Environment(loader=FileSystemLoader(f"themes/{html_theme}/layouts"))
-
-  # load the `index.jinja` template
-  index_template = env.get_template("index.html")
-  output_from_parsed_template = index_template.render(
-      site={
-          "name": "Verse",
-          "author": "Hasith Senevirathne",
-          "tagline": "",
-          "footer": f'Copyright © 2023 <a href="https://hasithsen.pages.dev">hsen</a>.',
-      },
-      post={
-          "title": "post title here",
-          "date": "",
-          "content": "sample content here",
-      }
-  )
-
   # Recreate build_export_directory directory
-  remove_directory(build_export_directory)
-  create_directory(build_export_directory)
+  remove_everything_inside_directory(build_export_directory)
+  # create_directory(build_export_directory)
 
-  # write the parsed template
-  with open(f"{build_export_directory}/index.html", "w") as web_page:
-    web_page.write(output_from_parsed_template)
+  site_ctx = {
+      "name": "Verse",
+      "tagline": "",
+      "author": "Hasith Senevirathne",
+      "footer": f'Copyright © 2023 <a href="https://hasithsen.pages.dev">hsen</a>.',
+  }
+
+  for filename in ["404.html", "about.html", "index.html"]:
+    template = load_template(html_theme, filename)
+    rendered_output = template.render(site_ctx=site_ctx)
+    # Save the rendered output to an HTML file
+    with open(f"{build_export_directory}/{filename}", "w") as web_page:
+      web_page.write(rendered_output)
+
+  # Get post filename list from content directory
+  post_list = [f for f in os.listdir(
+      post_directory) if os.path.isfile(os.path.join(post_directory, f))]
+
+  for filename in post_list:
+    file_path = f"{post_directory}/{filename}"
+    # Convert Markdown to HTML
+    with open(file_path, 'r', encoding='utf-8') as input_file:
+      document = frontmatter.load(file_path)
+      front_matter = document.metadata
+      markdown_content = document.content
+      html_content = markdown.markdown(markdown_content)
+      template = load_template(html_theme, "post.html")
+      post_ctx = {
+          "title": front_matter.get("title", "Untitled"),
+          "date": front_matter.get("date", "Undated"),
+          "content": html_content,
+      }
+      rendered_output = template.render(site_ctx=site_ctx, post_ctx=post_ctx)
+      post_save_directory = f"{build_export_directory}/{filename.split('.')[0]}"
+      create_directory(post_save_directory)
+      # Save the rendered output to an HTML file
+      with open(f"{post_save_directory}/index.html", "w") as web_page:
+        web_page.write(rendered_output)
 
   # Copy assets
   source_directory = f"themes/{html_theme}/assets"
