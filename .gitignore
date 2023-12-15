@@ -1,8 +1,8 @@
 # Ignore pysen build pages 
-public/
+# public/
 
 # Ignore pysen sample content
-content/
+# content/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
