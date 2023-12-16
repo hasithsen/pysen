@@ -15,9 +15,9 @@
       <article>
         <header id="post-header">
           <h1 class="mt-5">{{ post_ctx["title"] }}</h1>
-          <div><time>{{ post_ctx["date"] }}</time></div>
+          <p class="text-secondary">{{ post_ctx["date"].strftime('%B %-d, %Y') }}</p>
         </header>
-        <p class="lead">{{ post_ctx["content"] }}</p>
+        <p>{{ post_ctx["content"] }}</p>
       </article>
     </div>
   </main>

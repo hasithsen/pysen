@@ -142,16 +142,18 @@ def load_template(html_theme, template_name):
 
 
 def build_site():
+  site_name = "verse"
   html_theme = "poetry"  # directory name from under themes/
   post_directory = "content/posts"
-  build_export_directory = "public"
+  build_export_directory = f"public/{site_name}"
 
   # Recreate build_export_directory directory
+  create_directory(build_export_directory)
   remove_everything_inside_directory(build_export_directory)
-  # create_directory(build_export_directory)
 
   site_ctx = {
-      "name": "Verse",
+      "name": site_name,
+      "display_name": "Verse",
       "tagline": "",
       "author": "Hasith Senevirathne",
       "footer": f'Copyright © 2023 <a href="https://hasithsen.pages.dev">hsen</a>.',
