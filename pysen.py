@@ -14,12 +14,20 @@ from jinja2 import Template, Environment, FileSystemLoader
 import shutil
 import markdown
 import frontmatter
+import http.server
+import socketserver
+from functools import partial
 
 
 __license__ = "MIT"
-__version__ = "2023.12.03-2"
+__version__ = "2023.12.30-2"
 __maintainer__ = "Hasith Dhananjaya Senevirathne"
 __email_ = "sen.hasith@gmail.com"
+
+
+site_name = "verse"
+html_theme = "poetry"  # directory name from under themes/
+build_export_directory = f"public/{site_name}"
 
 
 def get_local_time_with_offset():
@@ -174,11 +182,8 @@ def get_post_info(file_path):
 
 
 def build_site():
-  site_name = "verse"
-  html_theme = "poetry"  # directory name from under themes/
   content_directory = "content"
   post_directory = f"{content_directory}/posts"
-  build_export_directory = f"public/{site_name}"
 
   # Recreate build_export_directory directory
   create_directory(build_export_directory)
@@ -203,17 +208,17 @@ def build_site():
     post_ctx_list.append(post_ctx)
     # We have post info, build post page
     build_detail_page(html_theme, "post.html",
-                      build_export_directory, file_path, [site_ctx, post_ctx])
+                      build_export_directory, file_path, (site_ctx, post_ctx))
 
   # Get about page info
   file_path = f"{content_directory}/about.md"
   post_ctx = get_post_info(file_path)
   # Build about page
   build_detail_page(html_theme, "about.html",
-                    build_export_directory, file_path, [site_ctx, post_ctx])
+                    build_export_directory, file_path, (site_ctx, post_ctx))
   # Build index page
   build_list_page(html_theme, "index.html",
-                  build_export_directory, [site_ctx, post_ctx_list])
+                  build_export_directory, (site_ctx, post_ctx_list))
 
   # Copy assets
   source_directory = f"themes/{html_theme}/assets"
@@ -222,11 +227,26 @@ def build_site():
   copy_directory(source_directory, destination_directory)
 
 
+def serve_site():
+  port = 8000
+  directory = "public"
+
+  Handler = partial(http.server.SimpleHTTPRequestHandler, directory=directory)
+
+  with socketserver.TCPServer(("", port), Handler) as httpd:
+    print(
+        f"Serving on port {port} (http://localhost:{port}/) from the directory: {directory}")
+    try:
+      httpd.serve_forever()
+    except KeyboardInterrupt:
+      print("\nServer stopped.")
+
+
 def main():
   parser = argparse.ArgumentParser(
       description="pysen - Simple static site generator.")
   parser.add_argument(
-      "action", nargs="?", choices=["new"], help="Specify the action to perform.")
+      "action", nargs="?", choices=["new", "serve", "server"], help="Specify the action to perform.")
   parser.add_argument(
       "file_path", nargs="?", help="Specify the file path new post.")
 
@@ -240,6 +260,8 @@ def main():
       print(f"The file '{args.file_path}' already exists, didn't touch.")
     else:
       print(f"Cannot determine the status of the file '{args.file_path}'.")
+  elif args.action in ("serve", "server"):
+    serve_site()
   else:
     build_site()
 
