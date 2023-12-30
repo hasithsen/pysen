@@ -159,10 +159,25 @@ def build_detail_page(html_theme, base_template, build_export_directory, content
     web_page.write(rendered_output)
 
 
+def get_post_info(file_path):
+  document = frontmatter.load(file_path)
+  front_matter = document.metadata
+  markdown_content = document.content
+  html_content = markdown.markdown(markdown_content)
+  ctx = {
+      "title": front_matter.get("title", "Untitled"),
+      "date": front_matter.get("date", "Undated"),
+      "content": html_content,
+      "filename": os.path.basename(file_path).split(".")[0],
+  }
+  return ctx
+
+
 def build_site():
   site_name = "verse"
   html_theme = "poetry"  # directory name from under themes/
-  post_directory = "content/posts"
+  content_directory = "content"
+  post_directory = f"{content_directory}/posts"
   build_export_directory = f"public/{site_name}"
 
   # Recreate build_export_directory directory
@@ -192,20 +207,28 @@ def build_site():
   # Get post info for each post
   for file_path in post_file_paths:
     # Get post info
-    document = frontmatter.load(file_path)
-    front_matter = document.metadata
-    markdown_content = document.content
-    html_content = markdown.markdown(markdown_content)
-    post_ctx = {
-        "title": front_matter.get("title", "Untitled"),
-        "date": front_matter.get("date", "Undated"),
-        "content": html_content,
-        "filename": os.path.basename(file_path).split(".")[0],
-    }
+    # document = frontmatter.load(file_path)
+    # front_matter = document.metadata
+    # markdown_content = document.content
+    # html_content = markdown.markdown(markdown_content)
+    # post_ctx = {
+    #     "title": front_matter.get("title", "Untitled"),
+    #     "date": front_matter.get("date", "Undated"),
+    #     "content": html_content,
+    #     "filename": os.path.basename(file_path).split(".")[0],
+    # }
+    post_ctx = get_post_info(file_path)
     post_ctx_list.append(post_ctx)
     # We have post info, build post page
     build_detail_page(html_theme, "post.html",
                       build_export_directory, file_path, [site_ctx, post_ctx])
+
+  # Get about page info
+  file_path = f"{content_directory}/about.md"
+  post_ctx = get_post_info(file_path)
+  # Build about page
+  build_detail_page(html_theme, "about.html",
+                    build_export_directory, file_path, [site_ctx, post_ctx])
   # Build index page
   build_list_page(html_theme, "index.html",
                   build_export_directory, [site_ctx, post_ctx_list])
