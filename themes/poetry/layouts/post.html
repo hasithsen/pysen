@@ -14,10 +14,10 @@
     <div class="container">
       <article>
         <header id="post-header">
-          <h1 class="mt-5">{{ post_ctx["title"] }}</h1>
-          <p class="text-secondary">{{ post_ctx["date"].strftime('%B %-d, %Y') }}</p>
+          <h1 class="mt-5">{{ ctx[1]["title"] }}</h1>
+          <p class="text-secondary">{{ ctx[1]["date"].strftime('%B %-d, %Y') }}</p>
         </header>
-        <p>{{ post_ctx["content"] }}</p>
+        <span class="fs-5">{{ ctx[1]["content"]|safe }}</span>
       </article>
     </div>
   </main>

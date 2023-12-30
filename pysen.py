@@ -62,7 +62,6 @@ def create_post(file_path):
   # extract filename sans extension
   title = os.path.splitext(os.path.basename(file_path))[0]
 
-  # date: {datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z')}
   content = f"""---
 title: "{title}"
 date: {get_local_time_with_offset()}
@@ -141,6 +140,25 @@ def load_template(html_theme, template_name):
   return template_env.get_template(template_name)
 
 
+def build_list_page(html_theme, base_template, build_export_directory, ctx):
+  template = load_template(html_theme, base_template)
+  rendered_output = template.render(ctx=ctx)
+  # Save the rendered output to an HTML file
+  with open(f"{build_export_directory}/{base_template}", "w") as web_page:
+    web_page.write(rendered_output)
+
+
+def build_detail_page(html_theme, base_template, build_export_directory, content_file_path, ctx):
+  template = load_template(html_theme, base_template)
+  rendered_output = template.render(ctx=ctx)
+  post_filename = os.path.basename(content_file_path)
+  post_save_directory = f"{build_export_directory}/{post_filename.split('.')[0]}"
+  create_directory(post_save_directory)
+  # Save the rendered output to an HTML file
+  with open(f"{post_save_directory}/index.html", "w") as web_page:
+    web_page.write(rendered_output)
+
+
 def build_site():
   site_name = "verse"
   html_theme = "poetry"  # directory name from under themes/
@@ -151,45 +169,46 @@ def build_site():
   create_directory(build_export_directory)
   remove_everything_inside_directory(build_export_directory)
 
+  # for filename in ["404.html", "about.html", "index.html"]:
+  #   template = load_template(html_theme, filename)
+  #   rendered_output = template.render(site_ctx=site_ctx)
+  #   # Save the rendered output to an HTML file
+  #   with open(f"{build_export_directory}/{filename}", "w") as web_page:
+  #     web_page.write(rendered_output)
+
+  # Build index page
   site_ctx = {
       "name": site_name,
       "display_name": "Verse",
       "tagline": "",
-      "author": "Hasith Senevirathne",
-      "footer": f'Copyright © 2023 <a href="https://hasithsen.pages.dev">hsen</a>.',
+      "footer": f'Copyright © 2023 <a href="https://hasithsen.pages.dev" class="text-decoration-none">hsen</a>.',
   }
-
-  for filename in ["404.html", "about.html", "index.html"]:
-    template = load_template(html_theme, filename)
-    rendered_output = template.render(site_ctx=site_ctx)
-    # Save the rendered output to an HTML file
-    with open(f"{build_export_directory}/{filename}", "w") as web_page:
-      web_page.write(rendered_output)
-
   # Get post filename list from content directory
-  post_list = [f for f in os.listdir(
+  # post_files = [f for f in os.listdir(
+  #     post_directory) if os.path.isfile(os.path.join(post_directory, f))]
+  post_file_paths = [os.path.join(post_directory, f) for f in os.listdir(
       post_directory) if os.path.isfile(os.path.join(post_directory, f))]
-
-  for filename in post_list:
-    file_path = f"{post_directory}/{filename}"
-    # Convert Markdown to HTML
-    with open(file_path, 'r', encoding='utf-8') as input_file:
-      document = frontmatter.load(file_path)
-      front_matter = document.metadata
-      markdown_content = document.content
-      html_content = markdown.markdown(markdown_content)
-      template = load_template(html_theme, "post.html")
-      post_ctx = {
-          "title": front_matter.get("title", "Untitled"),
-          "date": front_matter.get("date", "Undated"),
-          "content": html_content,
-      }
-      rendered_output = template.render(site_ctx=site_ctx, post_ctx=post_ctx)
-      post_save_directory = f"{build_export_directory}/{filename.split('.')[0]}"
-      create_directory(post_save_directory)
-      # Save the rendered output to an HTML file
-      with open(f"{post_save_directory}/index.html", "w") as web_page:
-        web_page.write(rendered_output)
+  post_ctx_list = []
+  # Get post info for each post
+  for file_path in post_file_paths:
+    # Get post info
+    document = frontmatter.load(file_path)
+    front_matter = document.metadata
+    markdown_content = document.content
+    html_content = markdown.markdown(markdown_content)
+    post_ctx = {
+        "title": front_matter.get("title", "Untitled"),
+        "date": front_matter.get("date", "Undated"),
+        "content": html_content,
+        "filename": os.path.basename(file_path).split(".")[0],
+    }
+    post_ctx_list.append(post_ctx)
+    # We have post info, build post page
+    build_detail_page(html_theme, "post.html",
+                      build_export_directory, file_path, [site_ctx, post_ctx])
+  # Build index page
+  build_list_page(html_theme, "index.html",
+                  build_export_directory, [site_ctx, post_ctx_list])
 
   # Copy assets
   source_directory = f"themes/{html_theme}/assets"
