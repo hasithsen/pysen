@@ -184,13 +184,6 @@ def build_site():
   create_directory(build_export_directory)
   remove_everything_inside_directory(build_export_directory)
 
-  # for filename in ["404.html", "about.html", "index.html"]:
-  #   template = load_template(html_theme, filename)
-  #   rendered_output = template.render(site_ctx=site_ctx)
-  #   # Save the rendered output to an HTML file
-  #   with open(f"{build_export_directory}/{filename}", "w") as web_page:
-  #     web_page.write(rendered_output)
-
   # Build index page
   site_ctx = {
       "name": site_name,
@@ -198,25 +191,14 @@ def build_site():
       "tagline": "",
       "footer": f'Copyright © 2023 <a href="https://hasithsen.pages.dev" class="text-decoration-none">hsen</a>.',
   }
+
   # Get post filename list from content directory
-  # post_files = [f for f in os.listdir(
-  #     post_directory) if os.path.isfile(os.path.join(post_directory, f))]
   post_file_paths = [os.path.join(post_directory, f) for f in os.listdir(
       post_directory) if os.path.isfile(os.path.join(post_directory, f))]
   post_ctx_list = []
   # Get post info for each post
   for file_path in post_file_paths:
     # Get post info
-    # document = frontmatter.load(file_path)
-    # front_matter = document.metadata
-    # markdown_content = document.content
-    # html_content = markdown.markdown(markdown_content)
-    # post_ctx = {
-    #     "title": front_matter.get("title", "Untitled"),
-    #     "date": front_matter.get("date", "Undated"),
-    #     "content": html_content,
-    #     "filename": os.path.basename(file_path).split(".")[0],
-    # }
     post_ctx = get_post_info(file_path)
     post_ctx_list.append(post_ctx)
     # We have post info, build post page
