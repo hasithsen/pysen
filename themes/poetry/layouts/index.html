@@ -12,7 +12,7 @@
     </div>
 
     <div class="container">
-      {% for post in ctx[1] %}
+      {% for post in ctx[1]|sort(attribute="date", reverse=True) %}
       <p>
         <a class="text-decoration-none" href="/{{ ctx[0]['name'] }}/{{ post["filename"] }}">
           <span class="fs-6">{{ post["title"] }}</span>
