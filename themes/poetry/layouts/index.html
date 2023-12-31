@@ -11,7 +11,7 @@
       {% include 'partials/header.html' %}
     </div>
 
-    <div class="container mt-5">
+    <div class="container">
       {% for post in ctx[1] %}
       <p>
         <a class="text-decoration-none" href="/{{ ctx[0]['name'] }}/{{ post["filename"] }}">
