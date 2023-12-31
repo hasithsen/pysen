@@ -15,7 +15,7 @@
       {% for post in ctx[1] %}
       <p>
         <a class="text-decoration-none" href="/{{ ctx[0]['name'] }}/{{ post["filename"] }}">
-          <span class="fs-5">{{ post["title"] }}</span>
+          <span class="fs-6">{{ post["title"] }}</span>
           <span class="ms-2 text-secondary">{{ post["date"].strftime("%b %-d, %Y") }}</span>
         </a>
       </p>
