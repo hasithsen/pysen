@@ -34,6 +34,17 @@ To install Python, follow the instructions at official Python website https://ww
 
 If you already have Python installed, clone or download this GitHub repository to your local machine and you are ready to go!
 
+```sh
+# create a Python virtual env
+python3 -m venv venv
+
+# activate Python virtual env
+. ./venv/bin/activate
+
+# install requirements
+pip3 install -r requirements.txt
+```
+
 ## Usage <a name = "usage"></a>
 
 Run below in your terminal for a list of supported options. 
