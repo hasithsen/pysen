@@ -26,7 +26,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Since Pysen is written in Python, you need to have it installed on your system, preferably a version newer than Python 3.6
+Since Pysen is written in Python, you need to have it installed on your system, preferably a version newer than Python 3.6.
 
 To install Python, follow the instructions at official Python website https://www.python.org/downloads/.
 
