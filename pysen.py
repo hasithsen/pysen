@@ -20,9 +20,6 @@ from functools import partial
 
 
 __license__ = "MIT"
-__version__ = "2023.12.30-2"
-__maintainer__ = "Hasith Dhananjaya Senevirathne"
-__email_ = "sen.hasith@gmail.com"
 
 
 site_name = "verse"
