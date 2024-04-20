@@ -65,7 +65,8 @@ def check_file_status(file_path):
 
 def create_post(file_path):
   # extract filename sans extension
-  title = os.path.splitext(os.path.basename(file_path))[0]
+  filename = os.path.splitext(os.path.basename(file_path))[0]
+  title = filename.replace('-', ' ').title()
 
   content = f"""---
 title: "{title}"
