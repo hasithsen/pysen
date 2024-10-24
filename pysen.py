@@ -173,6 +173,7 @@ def get_post_info(file_path):
   ctx = {
       "title": front_matter.get("title", "Untitled"),
       "date": front_matter.get("date", "Undated"),
+      "draft": front_matter.get("draft", True),
       "content": html_content,
       "filename": os.path.basename(file_path).split(".")[0],
   }
@@ -203,6 +204,9 @@ def build_site():
   for file_path in post_file_paths:
     # Get post info
     post_ctx = get_post_info(file_path)
+    # Skip drafts
+    if post_ctx['draft']:
+      continue
     post_ctx_list.append(post_ctx)
     # We have post info, build post page
     build_detail_page(html_theme, "post.html",
