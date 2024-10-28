@@ -139,6 +139,31 @@ def copy_directory(source_path, destination_path):
     print(f"An unexpected error occurred: {e}")
 
 
+def copy_directory_content(source_path, destination_path):
+  try:
+    # Ensure destination directory exists
+    if not os.path.exists(destination_path):
+      os.makedirs(destination_path)
+
+    # Iterate through items in the source directory
+    for item in os.listdir(source_path):
+      source_item = os.path.join(source_path, item)
+      destination_item = os.path.join(destination_path, item)
+
+      # Copy file or directory
+      if os.path.isdir(source_item):
+        shutil.copytree(source_item, destination_item)
+      else:
+        shutil.copy2(source_item, destination_item)
+
+    print(f"Contents of '{source_path}' copied to '{destination_path}' successfully.")
+
+  except shutil.Error as e:
+    print(f"Error: {e}")
+  except Exception as e:
+    print(f"An unexpected error occurred: {e}")
+
+
 def load_template(html_theme, template_name):
   # Load Jinja template from the 'themes' directory
   template_loader = FileSystemLoader(f"themes/{html_theme}/layouts")
@@ -188,7 +213,7 @@ def build_site():
   create_directory(build_export_directory)
   remove_everything_inside_directory(build_export_directory)
 
-  # Build index page
+  # Set site values
   site_ctx = {
       "name": site_name,
       "display_name": "Verse",
@@ -208,7 +233,12 @@ def build_site():
     if post_ctx['draft']:
       continue
     post_ctx_list.append(post_ctx)
-    # We have post info, build post page
+    # We have post info
+    # if post has associated asset directory, copy it to build_export_directory
+    directory_path = file_path.split(".")[0] + "/"
+    if check_file_status(directory_path):
+      copy_directory_content(directory_path, build_export_directory + '/' + post_ctx["filename"])
+    # build post page
     build_detail_page(html_theme, "post.html",
                       build_export_directory, file_path, (site_ctx, post_ctx))
 
@@ -222,7 +252,7 @@ def build_site():
   build_list_page(html_theme, "index.html",
                   build_export_directory, (site_ctx, post_ctx_list))
 
-  # Copy assets
+  # Copy theme assets
   source_directory = f"themes/{html_theme}/assets"
   destination_directory = f"{build_export_directory}/assets"
 
@@ -250,7 +280,7 @@ def main():
   parser.add_argument(
       "action", nargs="?", choices=["new", "serve", "server"], help="Specify the action to perform.")
   parser.add_argument(
-      "file_path", nargs="?", help="Specify the file path new post.")
+      "file_path", nargs="?", help="Specify the file path for new post.")
 
   args = parser.parse_args()
 
