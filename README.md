@@ -18,7 +18,7 @@ Pysen (stylized as **pysen**) is a simple static site generator focused on build
 + Markdown Support: Write your content in Markdown, allowing for easy content creation and editing.
 + Themable: Use your own to personalize the look and feel of your site.
 + Fast and Efficient: Generates static HTML pages, ensuring quick loading times and optimal performance.
-+ Asset Management: Automatically handles assets such as stylesheets and JavaScript files, and others. 
++ Asset Management: Automatically handles assets such as stylesheets, JavaScript files, and others. 
 
 ## Getting Started <a name = "getting_started"></a>
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
