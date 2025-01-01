@@ -218,7 +218,7 @@ def build_site():
       "name": site_name,
       "display_name": "Verse",
       "tagline": "",
-      "footer": f'Copyright © 2024 <a href="https://hasithsen.pages.dev" class="text-decoration-none">hsen</a>. Powered by <a href="https://github.com/hasithsen/pysen" class="text-decoration-none">Pysen</a>.',
+      "footer": f'Copyright © 2025 <a href="https://hasithsen.pages.dev" class="text-decoration-none">hsen</a>. Powered by <a href="https://github.com/hasithsen/pysen" class="text-decoration-none">Pysen</a>.',
   }
 
   # Get post filename list from content directory
