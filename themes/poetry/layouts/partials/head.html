@@ -26,10 +26,39 @@
         font-size: 3.5rem;
       }
     }
+
+    /* Dark theme styles */
+    .dark-theme {
+      --bs-body-bg: #181a1b;
+      --bs-body-color: #e9ecef;
+      --bs-link-color: #9ecbff;
+      background-color: var(--bs-body-bg) !important;
+      color: var(--bs-body-color) !important;
+    }
+    .dark-theme .bg-white {
+      background-color: #23272b !important;
+    }
+    .dark-theme .text-muted {
+      color: #b0b3b8 !important;
+    }
+    .dark-theme .nav-link, .dark-theme .fw-bold {
+      color: #e9ecef !important;
+    }
+    .dark-theme .btn-outline-secondary {
+      color: #e9ecef;
+      border-color: #e9ecef;
+    }
+    .dark-theme .btn-outline-secondary:hover {
+      background-color: #343a40;
+      color: #fff;
+    }
   </style>
 
 
   <!-- Custom styles for this template -->
   <link href="/{{ ctx[0]['name'] }}/assets/css/headers.css" rel="stylesheet">
   <link href="/{{ ctx[0]['name'] }}/assets/css/sticky-footer.css" rel="stylesheet">
+  
+  <!-- Custom javascript for this template -->
+  <script src="/{{ ctx[0]['name'] }}/assets/js/main.js"></script>
 </head>
