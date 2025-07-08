@@ -6,10 +6,10 @@
 
   function setTheme(theme) {
     if (theme === 'dark') {
-      document.documentElement.classList.add(DARK_CLASS);
+      document.body.classList.add(DARK_CLASS);
       document.getElementById('theme-toggle').textContent = LIGHT_ICON;
     } else {
-      document.documentElement.classList.remove(DARK_CLASS);
+      document.body.classList.remove(DARK_CLASS);
       document.getElementById('theme-toggle').textContent = DARK_ICON;
     }
     localStorage.setItem(THEME_KEY, theme);
