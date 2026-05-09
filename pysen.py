@@ -213,12 +213,14 @@ def build_site():
   create_directory(build_export_directory)
   remove_everything_inside_directory(build_export_directory)
 
+  year = get_local_time_with_offset().year
+
   # Set site values
   site_ctx = {
       "name": site_name,
       "display_name": "Verse",
       "tagline": "",
-      "footer": f'Copyright © 2025 <a href="https://hasithsen.pages.dev" class="text-decoration-none">hsen</a>. Powered by <a href="https://github.com/hasithsen/pysen" class="text-decoration-none">Pysen</a>.',
+      "footer": f'Copyright © {year} <a href="https://hasithsen.pages.dev" class="text-decoration-none">hsen</a>. Powered by <a href="https://github.com/hasithsen/pysen" class="text-decoration-none">Pysen</a>.',
   }
 
   # Get post filename list from content directory
