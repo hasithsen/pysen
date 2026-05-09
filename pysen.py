@@ -213,7 +213,7 @@ def build_site():
   create_directory(build_export_directory)
   remove_everything_inside_directory(build_export_directory)
 
-  year = get_local_time_with_offset().year
+  year = get_local_time_with_offset().split("T")[0].split("-")[0]
 
   # Set site values
   site_ctx = {
